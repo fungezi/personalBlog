@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>我的css</title>
+	<style type="text/css">
+		.box1{
+			width: 400px;
+			height: 100px;
+			text-align: center;
+			vertical-align: middle;
+			background-color: red;
+			font-size: 0px;
+		}
+		.box2{
+			width: 50px;
+			height: 50px;
+			background-color: blue;
+			vertical-align: middle;
+			display: inline-block;
+			/*兼容IE*/
+			*display: inline;
+			*zoom:1;
+		}
+		.box3{
+			width: 400px;
+			height: 300px;
+			background-color: gray;
+			/*vertical-align: middle;*/
+			text-align: center;
+			font-size: 0px;
+			/*display: inline-block;*/
+
+		}
+		.box3:after{
+			content: "";
+			display: inline-block;
+			vertical-align: middle;
+			height: 100%;
+		}
+		.box4{
+			background-color: red;
+			width: 200px;
+			color: white;
+			height: 80px;
+			display: inline-block;
+			vertical-align: middle;
+		}
+		.box6{
+			width: 50px;
+			height: 50px;
+			background-color: #dfd;
+		}
+		.box5{
+			width: 400px;
+			height: 400px;
+			background-color: #fef;
+			display: flex;
+			justify-content: space-around;
+			align-items: baseline;
+		}
+	</style>
+	<script type="text/javascript">
+		// js函数柯里化
+		// 首先是currying函数 用来将被需要的计数的函数进行
+		function currying(fn){
+			var args = [];
+			return function(){
+				if(arguments.length === 0){
+					return fn.apply(this,args);
+				}else{
+					[].push.apply(args,arguments);
+					return arguments.callee;
+				}
+			}
+		}
+		//利用闭包产生的全局变量保存起来,这样会使得内存泄漏
+		var cost = (function(){
+			var money = 0;
+			return function(){
+				for(var i = 0;i<arguments.length;i++){
+					money += arguments[i];
+				}
+				return money;
+			}
+		})()
+
+
+		// js反柯里化
+		// 反柯里化就是将某个对象的方法扩展到其他对象也可以调用
+		// 首先
+		Function.prototype.uncurrying = function(){
+			var self = this;
+			return function(){
+				return Function.prototype.call.apply(self,arguments);//调用call方法来的作用于为被指定方法
+			}
+		}
+		var push = Array.prototype.push.uncurrying();
+		var obj = {
+			length:1,
+			0:1
+		}
+		push(obj,2);
+		obj;
+	</script>
+	<script type="text/javascript">
+		// 判断回文
+		function checkBackWord(str){
+			return str.split("").reverse().join("") == str;
+		}
+		function uniqueElement1(arr){
+			var tempArr = [];
+			for(var i = 0;i<arr.length;i++){
+				if(!inArray(tempArr,arr[i])){
+					tempArr.push(arr[i]);
+				}
+			}
+			return tempArr;
+		}
+		function inArray(arr,ele){
+			for(var i = 0;i<arr.length;i++){
+				if(arr[i] == ele) return true;
+			}
+			return false;
+		}
+
+		function uniqueElement2(arr){
+			var arrObj = {};
+			var data = [];
+			for(var i = 0;i<arr.length;i++){
+				if(!arrObj[arr[i]]){
+					arrObj[arr[i]] = true;
+					data.push(arr[i]);
+				}
+			}
+			return data;
+		}
+		function findMaxWord(str){
+
+		}
+		//利用分治法实现的快速排序
+		//原理解析：将数组以一个标值分成两部分，然后进行递归。（至于如何分成两部分只需要在数组的两端分别找出大于或者小于标值的数值）
+		function quickSort(arr,low,height){
+			if(low < height){
+				var middle = pivotloc(arr,low,height);
+				quickSort(arr,low,middle - 1);
+				quickSort(arr,middle + 1,height);
+			}			
+		}
+		function pivotloc(arr,low,height){
+			var middle = arr[low];
+			while(height - low > 0){
+				while(height>low && arr[height] > middle) --height;
+				arr[low] = arr[height];
+				while(height>low && arr[low] < middle) ++low;
+				arr[height] = arr[low];
+			}
+			arr[low] = middle;
+			return low;
+		}
+		var arr = [49,38,65,97,76,13,27];
+		quickSort(arr,0,6);
+
+		//找出数组中最大的差值
+		function getMaxProfit(arr){
+			var minValue = arr[0];
+			var maxValue = 0;
+			for(var i = 0;i < arr.length;i++){
+				minValue = Math.min(minValue,arr[i]);
+				maxValue = Math.max(maxValue,arr[i]);
+			}
+			return maxValue - minValue;
+		}
+		var arr = [49,38,65,97,76,13,27];
+		getMaxProfit(arr);
+
+		//产生菲波那切数列
+		function getFibonacci(n){
+			var arr = [];
+			var i = 0;
+			while(i<n){
+				if(i<=1){
+					arr.push(i);
+				}else{
+					arr.push(arr[i-1] + arr[i-2]);
+				}
+				i++;
+			}
+			return arr;		
+		}
+		var a = getFibonacci(10);
+		a
+
+
+		//生成一个指定长度的随机字符串
+		function randomString(n){
+			var str = "abcdefghijklmnopqrstuvwxyz1234567890";
+			var randomStr = "";
+			for(var i = 0;i<n;i++){
+				randomStr += str.charAt(Math.round(Math.random()*36));
+			}
+			return randomStr;
+		}
+
+		//使用JS 实现二叉查找树
+
+		function binarySearchTree(){
+			var Node = function(key){
+				this.key = key;
+				this.left = null;
+				this.right = null;
+			}
+			var root = null;
+			this.insert = function(key){
+				var newNode = new Node(key);
+				if(root == null){
+					root = newNode;
+				}else{
+					insertNode(root,newNode);
+				}
+			}
+			function insertNode(node,newNode){
+				if(node.key > newNode.key){
+					if(node.left){
+						insertNode(node.left,newNode);
+					}else{
+						node.left = newNode;
+					}
+				}else{
+					if(node.right){
+						insertNode(node.right,newNode);
+					}else{
+						node.right = newNode;
+					}
+				}
+			}
+
+			function removeNode()
+
+		}
+
+
+		function clone(obj){
+			var o;
+			switch typeof obj{
+				case "undefined":
+				break;
+				case "Number":
+					o = obj + 0;
+				break;
+				case "String":
+					o = obj + "";
+				break;
+				case "boolean":
+					o = obj;
+				break;
+				case "Object":
+					if(obj == null){
+						obj = null;
+					}else{
+						
+					}
+				break;
+				default:
+				break;
+			}
+		}
+	</script>
+</head>
+<body>
+	<div class="box1">
+		<div class="box2"></div>
+		<div class="box2"></div>
+		<div class="box2"></div>
+	</div>
+	<div class="box3">
+		<div class="box4">sdad</div>
+	</div>
+	<div class="box5">
+		<div class="box6">1</div>
+		<div class="box6">2</div>
+		<div class="box6">3</div>
+	</div>
+</body>
+</html>
